@@ -1,4 +1,5 @@
 #include "shell.h"
+#define MAX_CHAR 17
 
 /**
  * prompt - Displays a prompt and wait for the user to type a command
@@ -11,10 +12,10 @@
 void prompt(char **av, char **env)
 {
 	char *string = NULL;
-	int i, status;
+	int i, m, status;
 	size_t n = 0;
 	ssize_t char_count;
-	char *argv[] = {NULL, NULL};
+	char *argv[MAX_CHAR];
 	pid_t pid;
 
 	while (1)
@@ -31,7 +32,9 @@ void prompt(char **av, char **env)
 				string[i] = 0;
 			i++;
 		}
-		argv[0] = string;
+		argv[m = 0] = strtok(string, " ");
+		while (argv[m])
+			argv[++m] = strtok(NULL, " ");
 		pid = fork();
 		if (pid == -1)
 			exit(EXIT_FAILURE);
