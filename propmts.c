@@ -1,4 +1,4 @@
-#include "simpleshell.h"
+#include "shell.h"
 #define MAX_CHAR 17
 
 /**
@@ -22,7 +22,7 @@ void prompt(char **av, char **env)
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			write(2, "CISFUN$", 8);
+			write(2, "CISFUN$ ", 8);
 		com = getline(&string, &n, stdin);
 		if (com == -1)
 			exit(EXIT_FAILURE);
@@ -33,7 +33,7 @@ void prompt(char **av, char **env)
 				string[i] = 0;
 			i++;
 		}
-		argv[m = 0] == strtok(string, "");
+		argv[m = 0] = strtok(string, "");
 		while (argv[m])
 			argv[++m] = strtok(NULL, "");
 		pid = fork();
