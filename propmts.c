@@ -25,11 +25,7 @@ void prompt(char **av, char **env)
 			write(STDOUT_FILENO, "CISFUN$ ", 8);
 		com = getline(&string, &n, stdin);
 		if (com == -1)
-		{
-			if (isatty(STDIN_FILENO))
-				write(STDOUT_FILENO, "\n", 1);
-			exit(EXIT_FAILURE);
-		}
+			write(STDOUT_FILENO, "\n", 1);
 		i = 0;
 		while (string[i])
 		{
