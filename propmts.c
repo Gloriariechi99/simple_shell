@@ -1,5 +1,5 @@
 #include "shell.h"
-#define MAX_CHAR 17
+#define MAX_CHAR 1024
 
 /**
  * prompt - Displays a prompt and waits for the
@@ -22,10 +22,14 @@ void prompt(char **av, char **env)
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			write(2, "CISFUN$ ", 8);
+			write(STDOUT_FILENO, "CISFUN$ ", 8);
 		com = getline(&string, &n, stdin);
 		if (com == -1)
+		{
+			if (isatty(STDIN_FILENO))
+				write(STDOUT_FILENO, "\n", 1);
 			exit(EXIT_FAILURE);
+		}
 		i = 0;
 		while (string[i])
 		{
@@ -33,9 +37,9 @@ void prompt(char **av, char **env)
 				string[i] = 0;
 			i++;
 		}
-		argv[m = 0] = strtok(string, "");
-		while (argv[m])
-			argv[++m] = strtok(NULL, "");
+		argv[m = 0] = strtok(string, " ");
+		while (argv[m] && m < MAX_CHAR - 1)
+			argv[++m] = strtok(NULL, " ");
 		pid = fork();
 		if (pid == -1)
 			exit(EXIT_FAILURE);
@@ -43,10 +47,10 @@ void prompt(char **av, char **env)
 		{
 			if (execve(argv[0], argv, env) == -1)
 			{
-				const char *error = ":NO such file or directory\n";
+				perror(":No such file or directory");
 
 				write(2, av[0], strlen(av[0]));
-				write(2, error, strlen(error));
+				exit(EXIT_FAILURE);
 			}
 		}
 		else
